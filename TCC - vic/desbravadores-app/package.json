@@ -1,0 +1,35 @@
+{
+  "name": "desbravadores-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "eslint . --ext .ts,.tsx",
+    "prisma": "prisma"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.18.0",
+    "@types/node": "^24.9.1",
+    "@types/react": "^19.2.2",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "^16.0.0",
+    "ioredis": "^5.8.2",
+    "jsonwebtoken": "^9.0.2",
+    "next": "^16.0.0",
+    "nodemailer": "^7.0.10",
+    "postcss": "^8.5.6",
+    "prisma": "^6.18.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "redis": "^5.8.3",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "tailwindcss": "^4.1.16",
+    "typescript": "^5.9.3"
+  }
+}
