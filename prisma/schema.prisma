@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  sgcId         String?   @unique // ID do usuário no SGC
+  password      String
+  role          UserRole  @default(DESBRAVADOR)
+  club          String?
+  region        String?
+  isActive      Boolean   @default(true)
+  profileImage  String?
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  posts         Post[]
+  certificates  Certificate[]
+  achievements  Achievement[]
+  followers     Follows[] @relation("following")
+  following     Follows[] @relation("follower")
+  chats        ChatParticipant[]
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  content     String
+  type        PostType
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  images      String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Certificate {
+  id          String    @id @default(cuid())
+  type        CertificateType
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  name        String
+  issuedAt    DateTime  @default(now())
+  imageUrl    String?
+  isPublic    Boolean   @default(true)
+}
+
+model Achievement {
+  id          String    @id @default(cuid())
+  type        AchievementType
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  name        String
+  progress    Int       @default(0)
+  completed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Follows {
+  follower    User     @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User     @relation("following", fields: [followingId], references: [id])
+  followingId String
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])
+}
+
+model Chat {
+  id              String    @id @default(cuid())
+  type            ChatType
+  name            String?
+  createdAt       DateTime  @default(now())
+  participants    ChatParticipant[]
+  messages        Message[]
+}
+
+model ChatParticipant {
+  chatId      String
+  userId      String
+  role        ChatRole  @default(MEMBER)
+  chat        Chat      @relation(fields: [chatId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  joinedAt    DateTime  @default(now())
+
+  @@id([chatId, userId])
+}
+
+model Message {
+  id          String    @id @default(cuid())
+  content     String
+  chatId      String
+  chat        Chat      @relation(fields: [chatId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+enum UserRole {
+  ADMIN
+  DIRETOR
+  LIDER
+  DESBRAVADOR
+}
+
+enum PostType {
+  REUNIAO
+  CAMPORI
+  ACAMPAMENTO
+  ESPECIALIDADE
+  CLASSE
+  HINO
+  SOCIAL
+}
+
+enum CertificateType {
+  CLASSE
+  ESPECIALIDADE
+  ANO_BIBLICO
+  MESTRADO
+}
+
+enum AchievementType {
+  CLASSE
+  ESPECIALIDADE
+  ANO_BIBLICO
+  MESTRADO
+}
+
+enum ChatType {
+  PRIVATE
+  GROUP
+}
+
+enum ChatRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
